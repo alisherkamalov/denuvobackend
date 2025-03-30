@@ -21,6 +21,11 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 app.use(express.json());
 app.use('/upload', express.static('upload'));
+app.use(cors({
+  origin: ["http://localhost:5252", "https://denuvobackend.vercel.app"],
+  methods: ["POST, GET, DELETE, OPTIONS, HEAD, PUT"],
+  allowedHeaders: ["Content-Type"]
+}));
 
 
 app.get("/me", checkAuth, UserController.getMe)
