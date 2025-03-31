@@ -25,7 +25,7 @@ export default (req, res, next) => {
         return res.status(403).json(
             {
                 message: "Нет доступа",
-                error: `${token}`
+                error: `${token, req.headers.authorization}`
             }
         )
     }
