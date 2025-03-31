@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import dotenv from "dotenv";
-dotenv.config({ path: ".env.local" })
+dotenv.config({ path: ".env" })
 
 const algorithm = 'aes-256-cbc';
 const secretKey = process.env.ENCRYPTION_KEY;

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
-dotenv.config({path: ".env.local"});
+dotenv.config({path: ".env"});
 
 export default (req, res, next) => {
     const token = (req.headers.authorization).replace(/Bearer\s?/, '');
@@ -15,7 +15,7 @@ export default (req, res, next) => {
         catch(e) {
             return res.status(403).json(
                 {
-                    message: "Нет доступа"
+                    message: "Нет доступа",
                 }
             )
         }
@@ -23,7 +23,8 @@ export default (req, res, next) => {
     else {
         return res.status(403).json(
             {
-                message: "Нет доступа"
+                message: "Нет доступа",
+                error: `${token}`
             }
         )
     }

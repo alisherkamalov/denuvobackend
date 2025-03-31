@@ -26,12 +26,11 @@ app.use(cors({
     methods: ["POST, GET, DELETE, OPTIONS, HEAD, PUT"],
     allowedHeaders: ["Content-Type"]
   }));
-  
 
 app.get("/me", checkAuth, UserController.getMe)
 app.get('/avatar/:filename', checkAuth, AvatarController.avatarGet);
 app.get('/chat/:chatId/messages', checkAuth, ChatController.getChatMessages);
-app.get('/finduser', checkAuth, HandleValidationErrors, UserController.findUser)
+app.get('/find/user', checkAuth, HandleValidationErrors, UserController.findUser)
 
 app.post('/login', loginValidation, HandleValidationErrors, UserController.login)
 app.post('/register', registerValidation, HandleValidationErrors, UserController.register)
@@ -42,7 +41,6 @@ app.post('/chat/:chatId/message', checkAuth, HandleValidationErrors, ChatControl
 app.listen(5252, () => {
     console.log('SERVER OK')
 })
-
 
 
 
