@@ -4,7 +4,7 @@ import { HandleValidationErrors, checkAuth } from "./utils/index.js";
 import { UserController, ChatController, AvatarController } from "./controllers/index.js";
 import mongoose from "mongoose";
 import multer from "multer";
-
+import cors from "cors";
 
 mongoose
         .connect(process.env.MONGO_URL)
@@ -21,7 +21,12 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 app.use(express.json());
 app.use('/upload', express.static('upload'));
-
+app.use(cors({
+    origin: ["http://localhost:5252", "https://denuvobackend-production.up.railway.app"],
+    methods: ["POST, GET, DELETE, OPTIONS, HEAD, PUT"],
+    allowedHeaders: ["Content-Type"]
+  }));
+  
 
 app.get("/me", checkAuth, UserController.getMe)
 app.get('/avatar/:filename', checkAuth, AvatarController.avatarGet);

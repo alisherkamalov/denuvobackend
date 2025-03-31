@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config({path: ".env.local"});
 
 export default (req, res, next) => {
-    const token = (req.headers.authorization || "").replace(/Bearer\s?/, '');
+    const token = (req.headers.authorization).replace(/Bearer\s?/, '');
 
     if (token) {
         try {
