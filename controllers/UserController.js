@@ -121,7 +121,7 @@ export const findUser = async (req, res) => {
         if (!link) {
             return res.status(400).json({ message: 'не найден' });
         }
-        const user = await User.findOne({ link }).select('_id nickname link avatarUrls');
+        const user = await UserModel.findOne({ link }).select('_id nickname link avatarUrls');
 
         if (!user) {
             return res.status(404).json({ message: 'Пользователь не найден' });
