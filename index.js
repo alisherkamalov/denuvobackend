@@ -2,20 +2,22 @@ import express from "express";
 import { loginValidation, registerValidation } from "./validators/auth.js";
 import { HandleValidationErrors, checkAuth } from "./utils/index.js";
 import { UserController, ChatController, AvatarController } from "./controllers/index.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import mongoose from "mongoose";
 import multer from "multer";
 import cors from "cors";
 
 mongoose
-        .connect(process.env.MONGO_URL)
-        .then(
-            () => {
-                console.log('DATABASE OK')
-            }
-        )
-        .catch((err) => {
-            console.log("error", err)
-        })
+    .connect(process.env.MONGO_URL)
+    .then(
+        () => {
+            console.log('DATABASE OK')
+        }
+    )
+    .catch((err) => {
+        console.log("error", err)
+    })
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() })
 
@@ -25,8 +27,13 @@ app.use(cors({
     origin: ["http://localhost:5252", "https://denuvobackend.up.railway.app"],
     methods: ["POST, GET, DELETE, OPTIONS, HEAD, PUT"],
     allowedHeaders: ["Content-Type"]
-  }));
+}));
+const server = createServer(app);
+const io = new Server(server);
 
+io.on('connection', (socket) => {
+    console.log('Пользователь подключился:', socket.id);
+});
 app.get("/me", checkAuth, UserController.getMe)
 app.get('/avatar/:filename', checkAuth, AvatarController.avatarGet);
 app.get('/chat/:chatId/messages', checkAuth, ChatController.getChatMessages);
