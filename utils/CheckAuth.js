@@ -15,7 +15,8 @@ export default (req, res, next) => {
         catch(e) {
             return res.status(403).json(
                 {
-                    message: "Нет доступа"
+                    message: "Нет доступа",
+                    error: `${token, req.userId}`
                 }
             )
         }
