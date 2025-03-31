@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config({path: ".env"});
 
 export default (req, res, next) => {
-    const token = (req.headers.authorization || "").replace(/Bearer\s?/, '');
+    const token = (req.headers.authorization).replace(/Bearer\s?/, '');
 
     if (token) {
         try {
@@ -16,7 +16,6 @@ export default (req, res, next) => {
             return res.status(403).json(
                 {
                     message: "Нет доступа",
-                    error: `${token, req.userId}`
                 }
             )
         }
@@ -25,7 +24,7 @@ export default (req, res, next) => {
         return res.status(403).json(
             {
                 message: "Нет доступа",
-                error: `${token, req.headers.authorization}`
+                error: `${token}`
             }
         )
     }
