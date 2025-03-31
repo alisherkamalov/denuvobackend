@@ -3,6 +3,7 @@ import { loginValidation, registerValidation } from "./validators/auth.js";
 import { HandleValidationErrors, checkAuth } from "./utils/index.js";
 import { UserController, ChatController, AvatarController } from "./controllers/index.js";
 import mongoose from "mongoose";
+import cors from 'cors';
 import multer from "multer";
 
 
@@ -42,7 +43,6 @@ app.post('/chat/:chatId/message', checkAuth, HandleValidationErrors, ChatControl
 app.listen(5252, () => {
     console.log('SERVER OK')
 })
-
 
 
 
