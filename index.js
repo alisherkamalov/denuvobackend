@@ -32,7 +32,7 @@ app.use(cors({
 app.get("/me", checkAuth, UserController.getMe)
 app.get('/avatar/:filename', checkAuth, AvatarController.avatarGet);
 app.get('/chat/:chatId/messages', checkAuth, ChatController.getChatMessages);
-app.get('/finduser', checkAuth, HandleValidationErrors, UserController.findUser)
+app.get('/find/user', checkAuth, HandleValidationErrors, UserController.findUser)
 
 app.post('/login', loginValidation, HandleValidationErrors, UserController.login)
 app.post('/register', registerValidation, HandleValidationErrors, UserController.register)

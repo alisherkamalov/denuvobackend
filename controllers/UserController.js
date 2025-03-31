@@ -116,7 +116,7 @@ export const getMe = async (req,res) => {
 
 export const findUser = async (req, res) => {
     try {
-        const { link } = req.body;
+        const { link } = req.body.link;
 
         if (!link) {
             return res.status(400).json({ message: 'не найден' });
