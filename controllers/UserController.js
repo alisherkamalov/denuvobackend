@@ -2,58 +2,52 @@ import UserModel from "../models/User.js"
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-
-export const register = async (req, res) => {
+export const registerSocket = async (socket, data) => {
+    const { nickname, link, password, avatarUrls } = data;
+    if (!password || password.trim() === "") {
+        socket.emit("register_response", { message: "Пароль не может быть пустым" });
+        return;
+    }
     try {
+        const existingUser = await UserModel.findOne({ link });
 
-        const password = req.body.password
-
+        if (existingUser) {
+            socket.emit("register_response", { message: "Пользователь уже существует" })
+            return
+        }
         const salt = await bcrypt.genSalt(10);
 
         const hash = await bcrypt.hash(password, salt)
-
         const doc = new UserModel({
-            nickname: req.body.nickname,
-            link: req.body.link,
-            avatarUrl: req.body.avatarUrl,
-            passwordHash: hash
+            nickname,
+            link,
+            passwordHash: hash,
+            avatarUrls: avatarUrls || ""
         })
-
         const user = await doc.save()
 
-        const token = jwt.sign({
-            _id: user._id
-        }, process.env.DENUVO_SECRET,
-        {
-            expiresIn: '1d'
+    
+        socket.emit("register_response", {
+            message: "вы успешно зарегистрировались!"
         })
 
-        const { passwordHash, ... userData } = user._doc
-
-        res.status(201).json({
-            ... userData,
-            token
-        });
-        
-    
-    } catch (err) {
-        res.status(500).json(
-            {
-                message: `Не удалось зарегистрироваться в Denuvo: ${err}`
-            },
-        )
+    }
+    catch (error) {
+        socket.emit("register_response", {
+            message: `произошла ошибка: ${error}`
+        })
     }
 }
 
-export const login = async (req,res) => {
+export const login = async (req, res) => {
     try {
-        const user = await UserModel.findOne({link: req.body.link.trim()})
+        const user = await UserModel.findOne({ link: req.body.link.trim() })
         if (!user) {
             return res.status(404).json(
                 {
                     message: 'Пользователь не найден'
                 }
-                
+
             )
         }
 
@@ -64,26 +58,26 @@ export const login = async (req,res) => {
                 {
                     message: 'Неверный логин или пароль'
                 }
-                
+
             )
         }
 
         const token = jwt.sign({
             _id: user._id
         }, process.env.DENUVO_SECRET,
-        {
-            expiresIn: '1d'
-        })
+            {
+                expiresIn: '1d'
+            })
 
-        const { passwordHash, ... userData } = user._doc
+        const { passwordHash, ...userData } = user._doc
 
         res.status(201).json({
-            ... userData,
+            ...userData,
             token
         });
     }
-    
-    catch(err) {
+
+    catch (err) {
         res.status(500).json(
             {
                 message: `Не удалось авторизоваться в Denuvo: ${err}`
@@ -92,7 +86,7 @@ export const login = async (req,res) => {
     }
 }
 
-export const getMe = async (req,res) => {
+export const getMe = async (req, res) => {
     try {
         const user = await UserModel.findById(req.userId)
 
@@ -103,11 +97,11 @@ export const getMe = async (req,res) => {
                 }
             )
         }
-        const { passwordHash, ... userData } = user._doc
+        const { passwordHash, ...userData } = user._doc
 
         res.status(201).json(userData);
     }
-    catch(err) {
+    catch (err) {
         res.status(500).json({
             message: "Нет доступа"
         });
@@ -130,8 +124,8 @@ export const findUser = async (req, res) => {
         return res.status(200).json({
             findUser: user
         });
-    } 
-    catch(e) {
+    }
+    catch (e) {
         res.status(500).json({
             message: `Ошибка поиска пользователя: ${e}`,
         });

@@ -15,7 +15,8 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     avatarUrls: [{  
-        type: String
+        type: String,
+        default: ''
     }],
     chats: [{
         type: String
