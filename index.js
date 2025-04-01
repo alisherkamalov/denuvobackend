@@ -1,5 +1,5 @@
 import express from "express";
-import { loginValidation, registerValidation } from "./validators/auth.js";
+import { loginValidation, registerValidation, validateSocketData } from "./validators/auth.js";
 import { HandleValidationErrors, checkAuth } from "./utils/index.js";
 import { UserController, ChatController, AvatarController } from "./controllers/index.js";
 import { createServer } from "http";
@@ -35,8 +35,8 @@ const io = new Server(server, {
 // Socket (test)
 io.on('connection', (socket) => {
     console.log('Пользователь подключился:', socket.id);
-    socket.on("register", registerValidation, HandleValidationErrors, (data) => UserController.registerSocket(socket, data));
-    socket.on("login", loginValidation, HandleValidationErrors, (data) => UserController.loginSocket(socket,data))
+    socket.on("register", validateSocketData(socket, data, async () => { await UserController.registerSocket(socket, data) }));
+    socket.on("login", validateSocketData(socket, data, async () => { await UserController.loginSocket(socket,data) }));
     socket.on('disconnect', () => {
         console.log('A client disconnected');
     });
