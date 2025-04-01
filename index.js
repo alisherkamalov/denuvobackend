@@ -35,7 +35,8 @@ const io = new Server(server, {
 // Socket (test)
 io.on('connection', (socket) => {
     console.log('Пользователь подключился:', socket.id);
-    socket.on("register", (data) => UserController.registerSocket(socket, data));
+    socket.on("register", registerValidation, HandleValidationErrors, (data) => UserController.registerSocket(socket, data));
+    socket.on("login", loginValidation, HandleValidationErrors, (data) => UserController.loginSocket(socket,data))
     socket.on('disconnect', () => {
         console.log('A client disconnected');
     });

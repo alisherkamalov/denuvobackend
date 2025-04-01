@@ -38,7 +38,48 @@ export const registerSocket = async (socket, data) => {
         })
     }
 }
+export const loginSocket = async (socket, data) => {
+    const { link, password } = data;
+    if (!password || password.trim() === "") {
+        socket.emit("login_response", { message: "Пароль не может быть пустым" });
+        return;
+    }
+    try {
+        const user = await UserModel.findOne({ link })
+        if (!user) {
+            socket.emit("login_response", { message: "Пользователь не найден" });
+            return;
+        }
 
+        const isValidPass = bcrypt.compare(password, user._doc.passwordHash)
+
+        if (!isValidPass) {
+            socket.emit("login_response", { message: "Линк или пароль неверные" });
+            return;
+        }
+
+        const token = jwt.sign({
+            _id: user._id
+        }, process.env.DENUVO_SECRET,
+            {
+                expiresIn: '1d'
+            })
+
+            const { passwordHash, ...userData } = user._doc;
+            socket.emit("login_response", {
+                message: `Вы успешно авторизовались`,
+                userData,
+                token
+            });
+            
+    }
+
+    catch (err) {
+        socket.emit("login_response", {
+            message: `произошла ошибка: ${error}`
+        })
+    }
+}
 export const login = async (req, res) => {
     try {
         const user = await UserModel.findOne({ link: req.body.link.trim() })
