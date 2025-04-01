@@ -35,8 +35,8 @@ const io = new Server(server, {
 // Socket (test)
 io.on('connection', (socket) => {
     console.log('Пользователь подключился:', socket.id);
-    socket.on("register", validateSocketData(socket, data, async () => { await UserController.registerSocket(socket, data) }));
-    socket.on("login", validateSocketData(socket, data, async () => { await UserController.loginSocket(socket,data) }));
+    socket.on("register", (data) => { validateSocketData(socket, data, async () => { await UserController.registerSocket(socket, data) }) });
+    socket.on("login", (data) => { validateSocketData(socket, data, async () => { await UserController.loginSocket(socket,data) }) });
     socket.on('disconnect', () => {
         console.log('A client disconnected');
     });
