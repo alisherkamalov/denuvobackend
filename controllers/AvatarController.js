@@ -19,7 +19,7 @@ export const avatarUpload = async (req, res) => {
 
         const newAvatarUser = await User.findByIdAndUpdate(
             userId,
-            { $push: { avatarUrls: imageDoc.apiUrl } },
+            { $push: { avatarUrls: imageDoc.cloudinaryUrl } },
             { new: true }
         );
         res.json({

@@ -20,6 +20,14 @@ const userSchema = new mongoose.Schema({
     }],
     chats: [{
         type: String
+    }],
+    isFrozen: {
+        type: Boolean,
+        required: true
+    },
+    allowedIp: [{
+        type: String,
+        default: ''
     }]
 
 },
