@@ -19,7 +19,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.use(express.json());
 app.use('/upload', express.static('upload'));
 app.use(cors({
-    origin: ["http://localhost:5252", "https://denuvobackend.up.railway.app", "http://localhost:3000"],
+    origin: ["http://localhost:5252", "https://denuvobackend.up.railway.app", "https://denuvo.vercel.app", "http://localhost:3000"],
     methods: ["POST", "GET", "DELETE", "OPTIONS", "HEAD", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
