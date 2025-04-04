@@ -37,16 +37,31 @@ io.on('connection', (socket) => {
     socket.on("findUser", (data) => {
         UserController.findUser(socket, data);
     });
+    socket.on("CreateChat", (data) => {
+        console.log("Received CreateChat:", data);
+        if (!data || typeof data !== "object") {
+            console.log("Invalid CreateChat data");
+            socket.emit("CreateError", "Неверный формат данных");
+            return;
+        }
+        const { senderId, receiverId } = data;
+        console.log("Extracted IDs:", { senderId, receiverId });
+        ChatController.createChat(socket, senderId, receiverId);
+    });
+    socket.on("GetUserChats", (userId) => {
+        console.log("Received GetUserChats:", userId);
+        ChatController.getUserChatsWithMessages(socket, userId);
+    });
 });
 
 // Routes...
 app.get("/me", checkAuth, UserController.getMe);
 app.get('/avatar/:filename', checkAuth, AvatarController.avatarGet);
-app.get('/chat/:chatId/messages', checkAuth, ChatController.getChatMessages);
+//app.get('/chat/:chatId/messages', checkAuth, ChatController.getChatMessages);
 app.get('/find/user', checkAuth, HandleValidationErrors, UserController.findUser);
 app.post('/login', loginValidation, HandleValidationErrors, UserController.login);
 app.post('/register', registerValidation, HandleValidationErrors, UserController.register);
-app.post('/create/chat/:userId', checkAuth, HandleValidationErrors, ChatController.createChat);
+//app.post('/create/chat/:userId', checkAuth, HandleValidationErrors, ChatController.createChat);
 app.post('/avatar', checkAuth, upload.single("image"), AvatarController.avatarUpload);
 app.post('/upload/imagechat/:chatId', checkAuth, upload.single("image"), ChatController.imageChat);
 app.post('/chat/:chatId/message', checkAuth, HandleValidationErrors, ChatController.sendMessage);

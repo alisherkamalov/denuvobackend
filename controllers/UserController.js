@@ -99,7 +99,6 @@ export const login = async (req, res) => {
 export const getMe = async (req, res) => {
     try {
         const { fingerprint, ip } = req.query; 
-        console.log(fingerprint, ip);
 
         if (!fingerprint || !ip) {
             return res.status(400).json({ error: "Отсутствуют fingerprint или ip" });
